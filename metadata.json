@@ -1,0 +1,6 @@
+{
+  "name": "RankLink Pro - Criador de Backlinks & Autoridade de Domínio",
+  "description": "Criação de backlinks reais de alta autoridade, relatórios detalhados de autoridade de domínio (DA/PA) em tempo real e dashboard intuitivo de monitoramento com métricas personalizadas.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
