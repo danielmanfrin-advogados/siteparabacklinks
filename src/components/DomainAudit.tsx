@@ -478,6 +478,48 @@ export const DomainAudit: React.FC<DomainAuditProps> = ({
                       </span>
                     </div>
                   </div>
+
+                  {auditData.trancoRank !== undefined && auditData.trancoRank !== null && (
+                    <div className="p-3.5 rounded-lg border border-slate-200 bg-slate-50/50 flex items-start gap-3">
+                      <div className="p-1 rounded bg-white border border-slate-200 shrink-0">
+                        <Award className="w-4 h-4 text-emerald-600" />
+                      </div>
+                      <div>
+                        <span className="font-semibold text-slate-900 block">Ranking Global Tranco</span>
+                        <span className="text-emerald-700 font-mono font-semibold mt-0.5 block tabular-nums">
+                          #{auditData.trancoRank.toLocaleString('pt-BR')} Mundial
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  {auditData.resolvedIp && auditData.resolvedIp !== 'N/A' && (
+                    <div className="p-3.5 rounded-lg border border-slate-200 bg-slate-50/50 flex items-start gap-3">
+                      <div className="p-1 rounded bg-white border border-slate-200 shrink-0">
+                        <ShieldCheck className="w-4 h-4 text-indigo-600" />
+                      </div>
+                      <div>
+                        <span className="font-semibold text-slate-900 block">IP Resolvido (DNS Google)</span>
+                        <span className="text-slate-600 font-mono mt-0.5 block tabular-nums">
+                          {auditData.resolvedIp}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  {auditData.nameservers && auditData.nameservers.length > 0 && (
+                    <div className="p-3.5 rounded-lg border border-slate-200 bg-slate-50/50 flex items-start gap-3">
+                      <div className="p-1 rounded bg-white border border-slate-200 shrink-0">
+                        <Layers className="w-4 h-4 text-cyan-600" />
+                      </div>
+                      <div>
+                        <span className="font-semibold text-slate-900 block">Servidores DNS Autorizados</span>
+                        <span className="text-slate-600 font-mono mt-0.5 block truncate max-w-[170px]">
+                          {auditData.nameservers.slice(0, 2).join(', ')}
+                        </span>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Preview */}

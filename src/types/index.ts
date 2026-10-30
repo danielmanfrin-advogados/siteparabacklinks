@@ -102,6 +102,9 @@ export interface DomainAuditData {
   hasSitemap: boolean;
   serverHeader: string;
   contentLength: number;
+  resolvedIp?: string;
+  trancoRank?: number | null;
+  nameservers?: string[];
   metrics: DomainMetrics;
   grade: AuthorityGrade;
   incomingBacklinks: IncomingBacklink[];

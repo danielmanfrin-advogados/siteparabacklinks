@@ -11,6 +11,7 @@ import { ReportModal } from './components/ReportModal';
 import { DomainAuditData, BacklinkSubmission, CustomMetricConfig } from './types';
 import { BACKLINK_PROVIDERS } from './data/backlinkProviders';
 import { calculateClientAudit } from './utils/auditHelper';
+import { fetchLiveSeoData } from './utils/realSeoAudit';
 
 const INITIAL_METRICS: CustomMetricConfig[] = [
   { id: 'da', label: 'Domain Authority (DA)', enabled: true, description: 'Classificação de força geral do domínio na escala Moz 1 a 100.', format: 'score' },
@@ -55,14 +56,20 @@ export default function App() {
           setTargetDa(Math.min(100, data.metrics.domainAuthority + 15));
         }
       } else {
-        const fallback = calculateClientAudit(urlToAudit);
+        const fallback = await fetchLiveSeoData(urlToAudit);
         setAuditData(fallback);
         setTargetDa(Math.min(100, fallback.metrics.domainAuthority + 15));
       }
     } catch (e) {
-      const fallback = calculateClientAudit(urlToAudit);
-      setAuditData(fallback);
-      setTargetDa(Math.min(100, fallback.metrics.domainAuthority + 15));
+      try {
+        const fallback = await fetchLiveSeoData(urlToAudit);
+        setAuditData(fallback);
+        setTargetDa(Math.min(100, fallback.metrics.domainAuthority + 15));
+      } catch {
+        const fallback = calculateClientAudit(urlToAudit);
+        setAuditData(fallback);
+        setTargetDa(Math.min(100, fallback.metrics.domainAuthority + 15));
+      }
     } finally {
       setIsLoadingAudit(false);
     }

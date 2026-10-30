@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { CompetitorBacklink, ReplicationActionType } from '../types';
 import { generateCompetitorBacklinks } from '../utils/auditHelper';
+import { fetchLiveCompetitorBacklinks } from '../utils/realSeoAudit';
 
 interface CompetitorReplicatorProps {
   currentMyDomain: string;
@@ -70,12 +71,17 @@ export const CompetitorReplicator: React.FC<CompetitorReplicatorProps> = ({
         const data = await res.json();
         setBacklinks(data.backlinks || []);
       } else {
-        const fallback = generateCompetitorBacklinks(competitorInput.trim(), myDomainInput.trim());
+        const fallback = await fetchLiveCompetitorBacklinks(competitorInput.trim(), myDomainInput.trim());
         setBacklinks(fallback);
       }
     } catch {
-      const fallback = generateCompetitorBacklinks(competitorInput.trim(), myDomainInput.trim());
-      setBacklinks(fallback);
+      try {
+        const fallback = await fetchLiveCompetitorBacklinks(competitorInput.trim(), myDomainInput.trim());
+        setBacklinks(fallback);
+      } catch {
+        const fallback = generateCompetitorBacklinks(competitorInput.trim(), myDomainInput.trim());
+        setBacklinks(fallback);
+      }
     } finally {
       setIsLoadingBacklinks(false);
     }

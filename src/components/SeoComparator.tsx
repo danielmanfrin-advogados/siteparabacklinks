@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ArrowLeftRight, Trophy, Zap, Shield, Globe, CheckCircle2, XCircle, ArrowUpRight } from 'lucide-react';
 import { DomainAuditData } from '../types';
 import { calculateClientAudit } from '../utils/auditHelper';
+import { fetchLiveSeoData } from '../utils/realSeoAudit';
 
 interface SeoComparatorProps {
   currentAuditData: DomainAuditData | null;
@@ -41,14 +42,23 @@ export const SeoComparator: React.FC<SeoComparatorProps> = ({
         }).then(r => r.json())
       ]);
 
-      let resultA = resA?.metrics ? resA : calculateClientAudit(domainA.trim());
-      let resultB = resB?.metrics ? resB : calculateClientAudit(domainB.trim());
+      let resultA = resA?.metrics ? resA : await fetchLiveSeoData(domainA.trim());
+      let resultB = resB?.metrics ? resB : await fetchLiveSeoData(domainB.trim());
 
       setDataA(resultA);
       setDataB(resultB);
     } catch {
-      setDataA(calculateClientAudit(domainA.trim()));
-      setDataB(calculateClientAudit(domainB.trim()));
+      try {
+        const [liveA, liveB] = await Promise.all([
+          fetchLiveSeoData(domainA.trim()),
+          fetchLiveSeoData(domainB.trim())
+        ]);
+        setDataA(liveA);
+        setDataB(liveB);
+      } catch {
+        setDataA(calculateClientAudit(domainA.trim()));
+        setDataB(calculateClientAudit(domainB.trim()));
+      }
     } finally {
       setIsLoading(false);
     }
