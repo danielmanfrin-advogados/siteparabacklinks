@@ -284,8 +284,9 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, () => {
-    console.log(`RankLink Pro Server running on port ${PORT}`);
+  const portNum = Number(PORT) || 3000;
+  app.listen(portNum, '0.0.0.0', () => {
+    console.log(`RankLink Pro Server running on port ${portNum}`);
   });
 }
 

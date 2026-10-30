@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowLeftRight, Trophy, Zap, Shield, Globe, CheckCircle2, XCircle, ArrowUpRight } from 'lucide-react';
 import { DomainAuditData } from '../types';
+import { calculateClientAudit } from '../utils/auditHelper';
 
 interface SeoComparatorProps {
   currentAuditData: DomainAuditData | null;
@@ -38,10 +39,14 @@ export const SeoComparator: React.FC<SeoComparatorProps> = ({
         }).then(r => r.json())
       ]);
 
-      setDataA(resA);
-      setDataB(resB);
+      let resultA = resA?.metrics ? resA : calculateClientAudit(domainA.trim());
+      let resultB = resB?.metrics ? resB : calculateClientAudit(domainB.trim());
+
+      setDataA(resultA);
+      setDataB(resultB);
     } catch {
-      // Fallback
+      setDataA(calculateClientAudit(domainA.trim()));
+      setDataB(calculateClientAudit(domainB.trim()));
     } finally {
       setIsLoading(false);
     }
