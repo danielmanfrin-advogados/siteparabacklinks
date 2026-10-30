@@ -51,6 +51,30 @@ export interface IncomingBacklink {
   spamScore: number;
 }
 
+export type ReplicationActionType = 'direct_submission' | 'directory_claim' | 'editorial_outreach' | 'community_post';
+
+export interface CompetitorBacklink {
+  id: string;
+  sourceDomain: string;
+  sourceUrl: string;
+  competitorUrl: string;
+  anchorText: string;
+  sourceDa: number;
+  sourcePa: number;
+  linkType: 'Dofollow' | 'Nofollow';
+  category: IncomingBacklinkCategory;
+  actionType: ReplicationActionType;
+  replicationStatus: 'available' | 'requesting' | 'replicated' | 'outreach_ready';
+  targetUrlForMySite: string;
+  replicatedAt?: string;
+  latencyMs?: number;
+  outreachPitch?: {
+    subject: string;
+    body: string;
+    editorEmail?: string;
+  };
+}
+
 export interface AuthorityGrade {
   letter: 'A+' | 'A' | 'B+' | 'B' | 'C' | 'D' | 'F';
   numericScore: number; // 0 - 100

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, Globe2, BarChart3, Radio, ArrowLeftRight, FileText } from 'lucide-react';
+import { Sparkles, Globe2, BarChart3, Radio, ArrowLeftRight, FileText, Crosshair } from 'lucide-react';
 
 interface NavbarProps {
   activeTab: string;
@@ -16,7 +16,8 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const navItems = [
     { id: 'generator', label: 'Gerador de Backlinks', icon: Sparkles },
-    { id: 'audit', label: 'Auditoria de Autoridade', icon: Globe2 },
+    { id: 'audit', label: 'Auditoria & Backlinks', icon: Globe2 },
+    { id: 'competitors', label: 'Replicar Concorrentes', icon: Crosshair },
     { id: 'evolution', label: 'Dashboard de Evolução', icon: BarChart3 },
     { id: 'monitor', label: 'Monitor de Links', icon: Radio },
     { id: 'compare', label: 'Comparador SEO', icon: ArrowLeftRight },

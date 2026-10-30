@@ -7,12 +7,14 @@ interface SeoComparatorProps {
   currentAuditData: DomainAuditData | null;
   onAuditUrl: (url: string) => void;
   onNavigateToGenerator: () => void;
+  onNavigateToCompetitors?: () => void;
 }
 
 export const SeoComparator: React.FC<SeoComparatorProps> = ({
   currentAuditData,
   onAuditUrl,
   onNavigateToGenerator,
+  onNavigateToCompetitors,
 }) => {
   const [domainA, setDomainA] = useState(currentAuditData?.domain || 'meusite.com.br');
   const [domainB, setDomainB] = useState('concorrente.com.br');
@@ -260,12 +262,22 @@ export const SeoComparator: React.FC<SeoComparatorProps> = ({
                 </span>
               )}
             </div>
-            <button
-              onClick={onNavigateToGenerator}
-              className="px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition-colors whitespace-nowrap cursor-pointer shrink-0"
-            >
-              Criar Novos Backlinks
-            </button>
+            <div className="flex items-center gap-2">
+              {onNavigateToCompetitors && (
+                <button
+                  onClick={onNavigateToCompetitors}
+                  className="px-4 py-2 text-xs font-semibold text-slate-800 bg-white border border-slate-300 hover:bg-slate-50 rounded-lg shadow-xs transition-colors whitespace-nowrap cursor-pointer shrink-0"
+                >
+                  Espionar & Replicar Backlinks do Concorrente
+                </button>
+              )}
+              <button
+                onClick={onNavigateToGenerator}
+                className="px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition-colors whitespace-nowrap cursor-pointer shrink-0"
+              >
+                Criar Novos Backlinks
+              </button>
+            </div>
           </div>
         </div>
       )}

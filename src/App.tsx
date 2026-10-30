@@ -5,6 +5,7 @@ import { DomainAudit } from './components/DomainAudit';
 import { EvolutionDashboard } from './components/EvolutionDashboard';
 import { LinkMonitor } from './components/LinkMonitor';
 import { SeoComparator } from './components/SeoComparator';
+import { CompetitorReplicator } from './components/CompetitorReplicator';
 import { CustomMetricsModal } from './components/CustomMetricsModal';
 import { ReportModal } from './components/ReportModal';
 import { DomainAuditData, BacklinkSubmission, CustomMetricConfig } from './types';
@@ -138,6 +139,13 @@ export default function App() {
           />
         )}
 
+        {activeTab === 'competitors' && (
+          <CompetitorReplicator
+            currentMyDomain={auditData?.domain || currentUrl}
+            onAuditUrl={handleAuditDomain}
+          />
+        )}
+
         {activeTab === 'evolution' && (
           <EvolutionDashboard
             auditData={auditData}
@@ -164,6 +172,7 @@ export default function App() {
             currentAuditData={auditData}
             onAuditUrl={handleAuditDomain}
             onNavigateToGenerator={() => setActiveTab('generator')}
+            onNavigateToCompetitors={() => setActiveTab('competitors')}
           />
         )}
       </main>

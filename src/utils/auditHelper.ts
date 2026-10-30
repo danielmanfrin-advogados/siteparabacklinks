@@ -1,4 +1,4 @@
-import { DomainAuditData, AuthorityGrade, IncomingBacklink, IncomingBacklinkCategory } from '../types';
+import { DomainAuditData, AuthorityGrade, IncomingBacklink, IncomingBacklinkCategory, CompetitorBacklink, ReplicationActionType } from '../types';
 
 interface SeedBacklinkSource {
   domain: string;
@@ -460,3 +460,51 @@ export function calculateClientAudit(rawUrl: string): DomainAuditData {
     auditedAt: new Date().toISOString(),
   };
 }
+
+export function generateCompetitorBacklinks(competitorDomain: string, myDomain: string): CompetitorBacklink[] {
+  let hash = 0;
+  for (let i = 0; i < competitorDomain.length; i++) {
+    hash = (hash << 5) - hash + competitorDomain.charCodeAt(i);
+    hash |= 0;
+  }
+  const h = Math.abs(hash);
+
+  const cleanMyDomain = myDomain.replace(/^(https?:\/\/)?(www\.)?/, '').split('/')[0];
+  const cleanCompDomain = competitorDomain.replace(/^(https?:\/\/)?(www\.)?/, '').split('/')[0];
+
+  return SEED_SOURCES.map((src, idx) => {
+    const isDofollow = (h + idx) % 4 !== 0 ? src.defaultType : (src.defaultType === 'Dofollow' ? 'Nofollow' : 'Dofollow');
+    
+    let actionType: ReplicationActionType = 'editorial_outreach';
+    if (src.category === 'Diretório Comercial' || src.category === 'Plataforma Tech') {
+      actionType = 'direct_submission';
+    } else if (src.category === 'Review / Avaliação') {
+      actionType = 'directory_claim';
+    } else if (src.category === 'Fórum / Comunidade') {
+      actionType = 'community_post';
+    } else {
+      actionType = 'editorial_outreach';
+    }
+
+    return {
+      id: `comp-bl-${idx + 1}-${src.domain.replace(/\./g, '-')}`,
+      sourceDomain: src.domain,
+      sourceUrl: src.urlPattern,
+      competitorUrl: `https://${cleanCompDomain}`,
+      anchorText: src.anchorTemplate(cleanCompDomain),
+      sourceDa: src.da,
+      sourcePa: src.pa,
+      linkType: isDofollow,
+      category: src.category,
+      actionType,
+      replicationStatus: 'available',
+      targetUrlForMySite: `https://${cleanMyDomain}`,
+      outreachPitch: {
+        subject: `Sugestão de referência editorial: ${cleanMyDomain} para o artigo em ${src.domain}`,
+        body: `Olá equipe editorial do ${src.domain},\n\nLi com muito interesse a matéria em ${src.urlPattern} onde vocês citam o site ${cleanCompDomain}.\n\nGostaria de sugerir a adição ou menção ao ${cleanMyDomain} (https://${cleanMyDomain}), que traz dados e ferramentas complementares de alta relevância para os leitores.\n\nFicamos à disposição para fornecer dados exclusivos ou uma demonstração.\n\nAtenciosamente,\nEquipe ${cleanMyDomain}`,
+        editorEmail: `redacao@${src.domain}`
+      }
+    };
+  });
+}
+
