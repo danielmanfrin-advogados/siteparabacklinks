@@ -24,6 +24,47 @@ export interface HistoricalPoint {
   da: number;
 }
 
+export type IncomingBacklinkCategory = 
+  | 'Portal de Notícias' 
+  | 'Artigo / Blog' 
+  | 'Diretório Comercial' 
+  | 'Fórum / Comunidade' 
+  | 'Recurso Educacional' 
+  | 'Wikis & Enciclopédias' 
+  | 'Plataforma Tech' 
+  | 'Review / Avaliação';
+
+export interface IncomingBacklink {
+  id: string;
+  sourceDomain: string;
+  sourceUrl: string;
+  targetUrl: string;
+  anchorText: string;
+  sourceDa: number;
+  sourcePa: number;
+  linkType: 'Dofollow' | 'Nofollow';
+  category: IncomingBacklinkCategory;
+  firstDetected: string;
+  lastChecked: string;
+  status: 'Ativo' | 'Redirecionado' | 'Perdido';
+  statusCode: number;
+  spamScore: number;
+}
+
+export interface AuthorityGrade {
+  letter: 'A+' | 'A' | 'B+' | 'B' | 'C' | 'D' | 'F';
+  numericScore: number; // 0 - 100
+  ratingLabel: string;
+  summary: string;
+  breakdown: {
+    backlinkProfileScore: number;
+    technicalHealthScore: number;
+    domainDiversityScore: number;
+    spamSafetyScore: number;
+    trustCitationBalance: number;
+  };
+}
+
 export interface DomainAuditData {
   domain: string;
   url: string;
@@ -38,6 +79,8 @@ export interface DomainAuditData {
   serverHeader: string;
   contentLength: number;
   metrics: DomainMetrics;
+  grade: AuthorityGrade;
+  incomingBacklinks: IncomingBacklink[];
   anchorTexts: AnchorTextItem[];
   historical: HistoricalPoint[];
   auditedAt: string;

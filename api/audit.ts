@@ -1,3 +1,5 @@
+import { calculateAuthorityGrade, generateIncomingBacklinks } from '../src/utils/auditHelper';
+
 export default async function handler(req: any, res: any) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Método não permitido' });
@@ -140,6 +142,20 @@ export default async function handler(req: any, res: any) {
     };
   });
 
+  const grade = calculateAuthorityGrade(
+    da,
+    pa,
+    spamScore,
+    isReachable,
+    hasSsl,
+    ttfb,
+    dofollowPercent,
+    trustFlow,
+    citationFlow
+  );
+
+  const incomingBacklinks = generateIncomingBacklinks(domain, da);
+
   return res.status(200).json({
     domain,
     url,
@@ -164,6 +180,8 @@ export default async function handler(req: any, res: any) {
       dofollowPercent,
       nofollowPercent,
     },
+    grade,
+    incomingBacklinks,
     anchorTexts,
     historical,
     auditedAt: new Date().toISOString(),

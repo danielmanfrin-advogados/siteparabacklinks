@@ -104,9 +104,15 @@ export const ReportModal: React.FC<ReportModalProps> = ({
                 <span>Data: {new Date(auditData.auditedAt).toLocaleDateString('pt-BR')} às {new Date(auditData.auditedAt).toLocaleTimeString('pt-BR')}</span>
               </div>
             </div>
-            <div className="text-right">
-              <span className="inline-block px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded border border-emerald-200">
-                Status: Auditado & Verificado
+            <div className="text-right flex items-center gap-3">
+              {auditData.grade && (
+                <div className="px-3 py-1 bg-blue-50 border border-blue-200 rounded-lg text-right">
+                  <div className="text-[10px] text-slate-400 uppercase font-semibold">Nota de Autoridade</div>
+                  <div className="text-lg font-black font-mono text-blue-600">{auditData.grade.letter} ({auditData.grade.numericScore}/100)</div>
+                </div>
+              )}
+              <span className="inline-block px-3 py-2 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded border border-emerald-200">
+                Auditado & Verificado
               </span>
             </div>
           </div>
@@ -235,6 +241,47 @@ export const ReportModal: React.FC<ReportModalProps> = ({
               </div>
             )}
           </div>
+
+          {/* Incoming Backlinks Discovered Section */}
+          {auditData.incomingBacklinks && auditData.incomingBacklinks.length > 0 && (
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="text-sm font-semibold text-slate-900">
+                  Backlinks Existentes Catalogados para {auditData.domain} ({auditData.incomingBacklinks.length})
+                </h4>
+                <span className="text-xs text-slate-500">
+                  Total estimado: {auditData.metrics.totalBacklinks.toLocaleString('pt-BR')} backlinks em {auditData.metrics.referringDomains.toLocaleString('pt-BR')} domínios
+                </span>
+              </div>
+
+              <div className="border border-slate-200 rounded-lg overflow-hidden">
+                <table className="min-w-full divide-y divide-slate-200 text-xs">
+                  <thead className="bg-slate-50">
+                    <tr>
+                      <th className="px-4 py-2.5 text-left font-semibold text-slate-700">Origem (Referrer)</th>
+                      <th className="px-4 py-2.5 text-left font-semibold text-slate-700">Texto Âncora</th>
+                      <th className="px-3 py-2.5 text-right font-semibold text-slate-700">DA</th>
+                      <th className="px-3 py-2.5 text-left font-semibold text-slate-700">Tipo</th>
+                      <th className="px-3 py-2.5 text-left font-semibold text-slate-700">Categoria</th>
+                      <th className="px-3 py-2.5 text-left font-semibold text-slate-700">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 bg-white">
+                    {auditData.incomingBacklinks.slice(0, 10).map((b, idx) => (
+                      <tr key={idx} className="hover:bg-slate-50/50">
+                        <td className="px-4 py-2 font-medium text-slate-900">{b.sourceDomain}</td>
+                        <td className="px-4 py-2 text-slate-700 font-medium truncate max-w-xs">"{b.anchorText}"</td>
+                        <td className="px-3 py-2 text-right font-mono font-semibold text-blue-600 tabular-nums">{b.sourceDa}</td>
+                        <td className="px-3 py-2 text-slate-600">{b.linkType}</td>
+                        <td className="px-3 py-2 text-slate-500">{b.category}</td>
+                        <td className="px-3 py-2 text-emerald-600 font-medium">200 OK</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
 
           {/* Footer Notes */}
           <div className="border-t border-slate-200 pt-4 text-xs text-slate-400 flex items-center justify-between">

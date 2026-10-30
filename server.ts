@@ -2,6 +2,7 @@ import express from 'express';
 import { createServer as createViteServer } from 'vite';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { calculateAuthorityGrade, generateIncomingBacklinks } from './src/utils/auditHelper';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -161,6 +162,20 @@ app.post('/api/audit', async (req, res) => {
     };
   });
 
+  const grade = calculateAuthorityGrade(
+    da,
+    pa,
+    spamScore,
+    isReachable,
+    hasSsl,
+    ttfb,
+    dofollowPercent,
+    trustFlow,
+    citationFlow
+  );
+
+  const incomingBacklinks = generateIncomingBacklinks(domain, da);
+
   return res.json({
     domain,
     url,
@@ -185,6 +200,8 @@ app.post('/api/audit', async (req, res) => {
       dofollowPercent,
       nofollowPercent,
     },
+    grade,
+    incomingBacklinks,
     anchorTexts,
     historical,
     auditedAt: new Date().toISOString(),
